@@ -5,7 +5,7 @@ beeps) via GCP pubsub. Lessons learned, using Dagger was overkill for this.
 
 ## Set up
 
-1. Create a Google Cloud project called `PROJECT_ID`
+1. Create a Google Cloud project, we'll call it `PROJECT_ID`
 2. Create a pubsub topic called `change_background` with a subscription called `change_background`
 3. Create a service account and paste the JSON into `BACKGROUND_CHANGER_GOOGLE_APPLICATION_CREDENTIALS_JSON`
 4. Add these values to `~/.gradle/gradle.properties`:
