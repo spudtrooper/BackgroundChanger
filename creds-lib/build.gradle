@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField 'String', "BackgroundChangerPubSubProjectId", BACKGROUND_CHANGER_PUBSUB_PROJECT_ID
+            buildConfigField 'String', "BackgroundChangerPubSubTopicId", BACKGROUND_CHANGER_PUBSUB_TOPIC_ID
+            buildConfigField 'String', "BackgroundChangerPubSubSubscriptionId", BACKGROUND_CHANGER_PUBSUB_SUBSCRIPTION_ID
+            buildConfigField 'String', "BackgroundChangerGoogleApplicationCredentialsJson", BACKGROUND_CHANGER_GOOGLE_APPLICATION_CREDENTIALS_JSON
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', "BackgroundChangerPubSubProjectId", BACKGROUND_CHANGER_PUBSUB_PROJECT_ID
+            buildConfigField 'String', "BackgroundChangerPubSubTopicId", BACKGROUND_CHANGER_PUBSUB_TOPIC_ID
+            buildConfigField 'String', "BackgroundChangerPubSubSubscriptionId", BACKGROUND_CHANGER_PUBSUB_SUBSCRIPTION_ID
+            buildConfigField 'String', "BackgroundChangerGoogleApplicationCredentialsJson", BACKGROUND_CHANGER_GOOGLE_APPLICATION_CREDENTIALS_JSON
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    implementation project(":backgroundchangerlib")
+
+    implementation 'com.google.cloud:google-cloud-pubsub:1.51.0'
+    annotationProcessor 'com.google.auto.value:auto-value:1.4'
+    implementation 'com.google.dagger:dagger:2.13'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+}

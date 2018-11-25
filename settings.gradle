@@ -1,0 +1,1 @@
+include ':changer-app', ':backgroundchangerlib', ':changee-app', ':changee-app', ':creds-lib'
