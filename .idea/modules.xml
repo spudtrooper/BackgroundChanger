@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/BackgroundChanger.iml" filepath="$PROJECT_DIR$/BackgroundChanger.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backgroundchangerlib/backgroundchangerlib.iml" filepath="$PROJECT_DIR$/backgroundchangerlib/backgroundchangerlib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/changee-app/changee-app.iml" filepath="$PROJECT_DIR$/changee-app/changee-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/changer-app/changer-app.iml" filepath="$PROJECT_DIR$/changer-app/changer-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/creds-lib/creds-lib.iml" filepath="$PROJECT_DIR$/creds-lib/creds-lib.iml" />
+    </modules>
+  </component>
+</project>

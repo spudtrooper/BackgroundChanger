@@ -28,12 +28,94 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 final class BackgroundChangeMessageProviderImpl implements BackgroundChangeMessageProvider {
-  private final Log log = new Log(this);
+  private final static class MessageData {
+    final String url;
+    final String msg;
+    final Boolean beep;
 
+    private MessageData(String url, String msg, Boolean beep) {
+      this.url = url;
+      this.msg = msg;
+      this.beep = beep;
+    }
+
+    public boolean isEmpty() {
+      return beep == null && isNullOrEmpty(url) && isNullOrEmpty(msg);
+    }
+  }
+
+  private final static class ResponseImpl implements Response {
+    private final Bitmap bitmap;
+    private final Boolean beep;
+
+    ResponseImpl(Bitmap bitmap, Boolean beep) {
+      this.bitmap = bitmap;
+      this.beep = beep;
+    }
+
+    @Override
+    public Bitmap getBitmap() {
+      return bitmap;
+    }
+
+    @Override
+    public Boolean getBeep() {
+      return beep;
+    }
+  }
+
+  private final static class ChangeBackgroundRunnable implements Runnable {
+    private final Log log = new Log(this);
+
+    private final Consumer<Response> consumer;
+    private final MessageData data;
+
+    ChangeBackgroundRunnable(Consumer<Response> consumer, MessageData data) {
+      this.consumer = consumer;
+      this.data = data;
+    }
+
+    @Override
+    public void run() {
+      String msg = data.msg;
+      String url = data.url;
+      Boolean beep = data.beep;
+
+      if (isNullOrEmpty(msg) && isNullOrEmpty(url)) {
+        consumer.accept(new ResponseImpl(null, Boolean.TRUE == beep));
+        return;
+      }
+
+      if (!isNullOrEmpty(msg)) {
+        consumer.accept(new ResponseImpl(ImageUtil.convert(msg), beep));
+        return;
+      }
+
+      Picasso.get().
+          load(url).
+          into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+              consumer.accept(new ResponseImpl(bitmap, beep));
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+              log.e("Failed to load bitmap for " + url, e);
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+              log.d("Preparing to load bitmap for: %s", url);
+            }
+          });
+    }
+  }
+
+  private final Log log = new Log(this);
   private final String projectId;
   private final String subscriptionId;
   private final CredentialsProvider credentialsProvider;
-
 
   BackgroundChangeMessageProviderImpl(String projectId,
                                       String subscriptionId,
@@ -118,90 +200,6 @@ final class BackgroundChangeMessageProviderImpl implements BackgroundChangeMessa
 
     } catch (IOException e) {
       log.e("Trying to get messages", e);
-    }
-  }
-
-  private final static class MessageData {
-    final String url;
-    final String msg;
-    final Boolean beep;
-
-    private MessageData(String url, String msg, Boolean beep) {
-      this.url = url;
-      this.msg = msg;
-      this.beep = beep;
-    }
-
-    public boolean isEmpty() {
-      return beep == null && isNullOrEmpty(url) && isNullOrEmpty(msg);
-    }
-  }
-
-  private final static class ResponseImpl implements Response {
-    private final Bitmap bitmap;
-    private final Boolean beep;
-
-    ResponseImpl(Bitmap bitmap, Boolean beep) {
-      this.bitmap = bitmap;
-      this.beep = beep;
-    }
-
-    @Override
-    public Bitmap getBitmap() {
-      return bitmap;
-    }
-
-    @Override
-    public Boolean getBeep() {
-      return beep;
-    }
-  }
-
-  private final static class ChangeBackgroundRunnable implements Runnable {
-    private final Log log = new Log(this);
-
-    private final Consumer<Response> consumer;
-    private final MessageData data;
-
-    ChangeBackgroundRunnable(Consumer<Response> consumer, MessageData data) {
-      this.consumer = consumer;
-      this.data = data;
-    }
-
-    @Override
-    public void run() {
-      String msg = data.msg;
-      String url = data.url;
-      Boolean beep = data.beep;
-
-      if (isNullOrEmpty(msg) && isNullOrEmpty(url)) {
-        consumer.accept(new ResponseImpl(null, Boolean.TRUE == beep));
-        return;
-      }
-
-      if (!isNullOrEmpty(msg)) {
-        consumer.accept(new ResponseImpl(ImageUtil.convert(msg), beep));
-        return;
-      }
-
-      Picasso.get().
-          load(url).
-          into(new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-              consumer.accept(new ResponseImpl(bitmap, beep));
-            }
-
-            @Override
-            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-              log.e("Failed to load bitmap for " + url, e);
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-              log.d("Preparing to load bitmap for: %s", url);
-            }
-          });
     }
   }
 }

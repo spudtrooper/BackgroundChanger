@@ -9,8 +9,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 final class BackgroundChangeMessageSenderImpl implements BackgroundChangeMessageSender {
-  private final Log log = new Log(this);
+  private final static class ChangedBackgroundResponseImpl implements ChangedBackgroundResponse {
+    private final String id;
 
+    private ChangedBackgroundResponseImpl(String id) {this.id = id;}
+
+    @Override
+    public String getId() {
+      return id;
+    }
+  }
+
+  private final Log log = new Log(this);
   private final PubSubPublisher publisher;
 
   BackgroundChangeMessageSenderImpl(PubSubPublisher publisher) {this.publisher = publisher;}
@@ -38,16 +48,5 @@ final class BackgroundChangeMessageSenderImpl implements BackgroundChangeMessage
     attrs.put("beep", "true");
     String id = publisher.sendMessage("", attrs);
     return new ChangedBackgroundResponseImpl(id);
-  }
-
-  private final static class ChangedBackgroundResponseImpl implements ChangedBackgroundResponse {
-    private final String id;
-
-    private ChangedBackgroundResponseImpl(String id) {this.id = id;}
-
-    @Override
-    public String getId() {
-      return id;
-    }
   }
 }

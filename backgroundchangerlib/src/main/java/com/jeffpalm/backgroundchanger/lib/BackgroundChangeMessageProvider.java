@@ -5,11 +5,11 @@ import android.graphics.Bitmap;
 import com.jeffpalm.backgroundchanger.util.Consumer;
 
 public interface BackgroundChangeMessageProvider {
-  void checkForUpdates(Consumer<Response> consumer);
-
   interface Response {
     Bitmap getBitmap();
 
     Boolean getBeep();
   }
+
+  void checkForUpdates(Consumer<Response> consumer);
 }
