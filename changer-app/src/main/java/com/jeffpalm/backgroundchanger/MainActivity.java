@@ -24,8 +24,9 @@ import javax.inject.Inject;
 
 public class MainActivity extends AppCompatActivity {
   private final Log log = Log.of(this);
-  //  private final AppFactory factory = AppFactoryImpl.createFromBuildConfig();
   private final ShowImagePickerDialog showImagePickerDialog = new ShowImagePickerDialog(this, 1);
+
+  MagicalTakePhoto magicalTakePhoto;
 
   @Inject BackgroundChangeMessageSender messageSender;
 
@@ -67,10 +68,6 @@ public class MainActivity extends AppCompatActivity {
     }.execute();
   }
 
-  //  private String doUploadBeep() {
-//    return factory.newMessageSender().beep().getId();
-//  }
-
   private void uploadUrl(CharSequence url) {
     new AsyncTask<String, Void, String>() {
       @Override
@@ -89,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
   private String doUploadUrl(String url) {
     log.d("Trying to publish url: %s", url);
-//    return factory.newMessageSender().changeBackground(url).getId();
     return messageSender.changeBackground(url).getId();
   }
 
@@ -119,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private String doPublishBitmap(Bitmap bitmap) {
-//    return factory.newMessageSender().changeBackground(bitmap).getId();
     return messageSender.changeBackground(bitmap).getId();
   }
 
@@ -144,8 +139,6 @@ public class MainActivity extends AppCompatActivity {
     log.d("uploadImage");
     showImagePickerDialog.provide(bitmap -> publishBitmap(bitmap));
   }
-
-  MagicalTakePhoto magicalTakePhoto;
 
   private void takeScreenshot() {
     magicalTakePhoto.takePhoto("my_photo_name");
